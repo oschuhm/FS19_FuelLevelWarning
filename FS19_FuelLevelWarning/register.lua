@@ -12,6 +12,7 @@ if g_specializationManager:getSpecializationByName("fuelLevelWarning") == nil th
   for typeName, typeEntry in pairs(g_vehicleTypeManager:getVehicleTypes()) do
     if SpecializationUtil.hasSpecialization(Drivable, typeEntry.specializations) and not SpecializationUtil.hasSpecialization(Locomotive, typeEntry.specializations) then
       g_vehicleTypeManager:addSpecialization(typeName, "fuelLevelWarning")
+      print ("  added fuelLevelWarning to " .. typeName)
     end
   end
 end

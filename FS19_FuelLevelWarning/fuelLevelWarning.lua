@@ -7,11 +7,11 @@
 
 fuelLevelWarning = {}
 
-AGCOBeepSound = createSample("AGCOBeep")
-local file = g_currentModDirectory.."sounds/AGCO_beep.wav"
-loadSample(AGCOBeepSound, file, false)
+FuelBeepSound5 = createSample("FuelBeepSound5")
+local file = g_currentModDirectory.."sounds/FuelBeepSound5.wav"
+loadSample(FuelBeepSound5, file, false)
 
-local count = 0
+local beepInActive = true
 
 function fuelLevelWarning.prerequisitesPresent(specializations)
   return true
@@ -28,44 +28,33 @@ function fuelLevelWarning:onLoad(savegame)
 end
 
 function fuelLevelWarning:onUpdate(dt)
-	if self:getIsActive() and not self.attacheble then
-	local fuelFillType = self:getConsumerFillUnitIndex(FillType.DIESEL)
-	local fillLevel = self:getFillUnitFillLevel(fuelFillType)
-	local capacity = self:getFillUnitCapacity(fuelFillType)
-	local fuelLevelPercentage = fillLevel / capacity * 100
-	local warnFrequency = 0
+	if self:getIsActive() and self:getIsEntered() and not self.attacheble and self.isClient and self:getIsMotorStarted() ~= false then
+
+        local fuelFillType = self:getConsumerFillUnitIndex(FillType.DIESEL)
+        local fillLevel = self:getFillUnitFillLevel(fuelFillType)
+        local capacity = self:getFillUnitCapacity(fuelFillType)
+        local fuelLevelPercentage = fillLevel / capacity * 100
+        local warnFrequency = 0
+        
+        -- print ("DEBUG: Actual Fuel Level: " .. fillLevel)
+        -- print ("DEBUG: Actual Fuel Capacity: " .. capacity)
+        -- print ("DEBUG: Actual Fuel Level Percentage: " .. fuelLevelPercentage)
+        -- print ("DEBUG: dt: " .. dt)
+        -- print ("DEBUG: Count: " .. count)
 	
-	-- print ("DEBUG: Actual Fuel Level: " .. fillLevel)
-	-- print ("DEBUG: Actual Fuel Capacity: " .. capacity)
-    -- print ("DEBUG: Actual Fuel Level Percentage: " .. fuelLevelPercentage)
-	-- print ("DEBUG: Count: " .. count)
-	
-		if fuelLevelPercentage <= 10 and self:getIsEntered() then
-			
-			if count == 0 then
-				playSample(AGCOBeepSound ,1 ,1 ,1 ,0 ,0)
-			end
-			
-			count = count + 1
-			
-			if fuelLevelPercentage > 5 then
-				warnFrequency = 750
-			elseif fuelLevelPercentage <= 5 and fuelLevelPercentage > 2 then
-				warnFrequency = 250
-			elseif  fuelLevelPercentage <= 2 then
-				warnFrequency = 100
-			end
-			
-			--print ("DEBUG: Frequency: " .. warnFrequency)
-			
-			if count > warnFrequency then
-				count = 0
-			end
-			
-		else
-			count = 0
-		end
-	
+        if fuelLevelPercentage <= 10 then
+            if beepInActive == true then
+              print ("DEBUG: Activate 5sec BEEP")
+              playSample(FuelBeepSound5,0,1,0,0,0)
+              beepInActive = false
+            end
+        end
+    else
+        if beepInActive == false then
+            print ("DEBUG: Deactivate 5sec BEEP")
+            stopSample(FuelBeepSound5,0,0)
+            beepInActive = true
+        end
   	end
 
 end
