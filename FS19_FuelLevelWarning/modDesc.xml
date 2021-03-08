@@ -3,7 +3,7 @@
 
    <author>LS-Farmers</author>
    	
-	<version>0.0.0.2</version>
+	<version>0.0.0.3</version>
    
     <title>
 		<en>Fuellevel Warning</en>
@@ -27,4 +27,5 @@
 	<extraSourceFiles>
         <sourceFile filename="register.lua" />
     </extraSourceFiles>
+
 </modDesc>
